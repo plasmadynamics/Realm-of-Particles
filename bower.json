@@ -3,7 +3,8 @@
   "version": "0.0.1",
   "homepage": "https://github.com/plasmadynamics/Realm-of-Particles",
   "authors": [
-    "George <georgeunix@gmail.com>"
+    "George <georgeunix@gmail.com>",
+	"Rasmus <rasmus.jepsen@gmail.com>"
   ],
   "description": "2D Platformer.",
   "main": "client/js/main.js",
