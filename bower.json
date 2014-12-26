@@ -1,0 +1,26 @@
+{
+  "name": "Realm-of-Particles",
+  "version": "0.0.1",
+  "homepage": "https://github.com/plasmadynamics/Realm-of-Particles",
+  "authors": [
+    "George <georgeunix@gmail.com>"
+  ],
+  "description": "2D Platformer.",
+  "main": "client/js/main.js",
+  "moduleType": [
+    "node"
+  ],
+  "keywords": [
+    "platformer",
+    "2d",
+    "game"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
