@@ -26,7 +26,7 @@ ctx.drawImage(char, 0, 0, 14, 16, charx, chary, 14, 16);
 function keys(event) {
 	switch (event.keyCode) {
 		case 87: //W
-			if ((chary > 0)) { // && (protomap[(chary-16)/16][charx/16] == 1)
+			if ((chary > 0) && (protomap[(chary-16)/16][(charx-1)/16] == 1)) {
 				chary-=16;
 				drawMap(protomap);
 				ctx.drawImage(char, 0, 0 , 14, 16, charx, chary, 14, 16);
@@ -34,7 +34,7 @@ function keys(event) {
 			}
 			break;
 		case 65: //A
-			if ((charx > 16)) { // && (protomap[chary/16][(charx-16)/16] == 1)
+			if ((charx > 16) && (protomap[chary/16][(charx-17)/16] == 1)) {
 				charx-=16;
 				drawMap(protomap);
 				ctx.drawImage(char, 0, 0, 14, 16, charx, chary, 14, 16);
@@ -42,7 +42,7 @@ function keys(event) {
 			}
 			break;
 		case 83: //S
-			if ((chary+16 < canvas.height)) { // && (protomap[(chary+16)/16][charx/16] == 1)
+			if ((chary+16 < canvas.height) && (protomap[(chary+16)/16][(charx-1)/16] == 1)) {
 				chary+=16;
 				drawMap(protomap);
 				ctx.drawImage(char, 0, 0, 14, 16, charx, chary, 14, 16);
@@ -50,7 +50,7 @@ function keys(event) {
 			}
 			break;
 		case 68: //D
-			if ((charx+30 < canvas.width)) { // && (protomap[chary/16][(charx+16)/16] == 1)
+			if ((charx+30 < canvas.width) && (protomap[chary/16][(charx+15)/16] == 1)) {
 				charx+=16;
 				drawMap(protomap);
 				ctx.drawImage(char, 0, 0, 14, 16, charx, chary, 14, 16);
