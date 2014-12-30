@@ -44,6 +44,13 @@ function keys(event) {
 				protomap = chunkExists(chunkx, chunky);
 				drawMap(protomap);
 				ctx.drawImage(char, 0, 0 , 14, 16, charx, chary, 14, 16);
+				if (protomap[chary/16][(charx-1)/16] == 0) {
+					chunky+=1;
+					chary=0;
+					protomap = chunkExists(chunkx, chunky);
+					drawMap(protomap);
+					ctx.drawImage(char, 0, 0 , 14, 16, charx, chary, 14, 16);
+				}
 				break;
 			}
 			else if (((chary > 0) == false) && (chunkExists(chunkx, chunky-1) == false)) {
@@ -54,6 +61,13 @@ function keys(event) {
 				chunkmap.push([chunkx, chunky, protomap]);
 				drawMap(protomap);
 				ctx.drawImage(char, 0, 0 , 14, 16, charx, chary, 14, 16);
+				if (protomap[chary/16][(charx-1)/16] == 0) {
+					chunky+=1;
+					chary=0;
+					protomap = chunkExists(chunkx, chunky);
+					drawMap(protomap);
+					ctx.drawImage(char, 0, 0 , 14, 16, charx, chary, 14, 16);
+				}
 				break;
 			}
 			break;
@@ -70,6 +84,13 @@ function keys(event) {
 				protomap = chunkExists(chunkx, chunky);
 				drawMap(protomap);
 				ctx.drawImage(char, 0, 0 , 14, 16, charx, chary, 14, 16);
+				if (protomap[chary/16][(charx-1)/16] == 0) {
+					chunkx+=1;
+					charx=1;
+					protomap = chunkExists(chunkx, chunky);
+					drawMap(protomap);
+					ctx.drawImage(char, 0, 0 , 14, 16, charx, chary, 14, 16);
+				}
 				break;
 			}
 			else if (((charx > 16) == false) && (chunkExists(chunkx-1, chunky) == false)) {
@@ -80,6 +101,13 @@ function keys(event) {
 				chunkmap.push([chunkx, chunky, protomap]);
 				drawMap(protomap);
 				ctx.drawImage(char, 0, 0 , 14, 16, charx, chary, 14, 16);
+				if (protomap[chary/16][(charx-1)/16] == 0) {
+					chunkx+=1;
+					charx=1;
+					protomap = chunkExists(chunkx, chunky);
+					drawMap(protomap);
+					ctx.drawImage(char, 0, 0 , 14, 16, charx, chary, 14, 16);
+				}
 				break;
 			}
 			break;
@@ -96,6 +124,13 @@ function keys(event) {
 				protomap = chunkExists(chunkx, chunky);
 				drawMap(protomap);
 				ctx.drawImage(char, 0, 0 , 14, 16, charx, chary, 14, 16);
+				if (protomap[chary/16][(charx-1)/16] == 0) {
+					chunky-=1;
+					chary=(canvas.height-16);
+					protomap = chunkExists(chunkx, chunky);
+					drawMap(protomap);
+					ctx.drawImage(char, 0, 0 , 14, 16, charx, chary, 14, 16);
+				}
 				break;
 			}
 			else if (((chary + 16 < canvas.height) == false) && (chunkExists(chunkx, chunky+1) == false)) {
@@ -106,6 +141,13 @@ function keys(event) {
 				chunkmap.push([chunkx, chunky, protomap]);
 				drawMap(protomap);
 				ctx.drawImage(char, 0, 0 , 14, 16, charx, chary, 14, 16);
+				if (protomap[chary/16][(charx-1)/16] == 0) {
+					chunky-=1;
+					chary=(canvas.height-16);
+					protomap = chunkExists(chunkx, chunky);
+					drawMap(protomap);
+					ctx.drawImage(char, 0, 0 , 14, 16, charx, chary, 14, 16);
+				}
 				break;
 			}
 			break;
@@ -122,6 +164,13 @@ function keys(event) {
 				protomap = chunkExists(chunkx, chunky);
 				drawMap(protomap);
 				ctx.drawImage(char, 0, 0 , 14, 16, charx, chary, 14, 16);
+				if (protomap[chary/16][(charx-1)/16] == 0) {
+					chunkx-=1;
+					charx=(canvas.width-15);
+					protomap = chunkExists(chunkx, chunky);
+					drawMap(protomap);
+					ctx.drawImage(char, 0, 0 , 14, 16, charx, chary, 14, 16);
+				}
 				break;
 			}
 			else if (((charx + 30 < canvas.width) == false) && (chunkExists(chunkx+1, chunky) == false)) {
@@ -132,6 +181,13 @@ function keys(event) {
 				chunkmap.push([chunkx, chunky, protomap]);
 				drawMap(protomap);
 				ctx.drawImage(char, 0, 0 , 14, 16, charx, chary, 14, 16);
+				if (protomap[chary/16][(charx-1)/16] == 0) {
+					chunkx-=1;
+					charx=(canvas.width-15);
+					protomap = chunkExists(chunkx, chunky);
+					drawMap(protomap);
+					ctx.drawImage(char, 0, 0 , 14, 16, charx, chary, 14, 16);
+				}
 				break;
 			}
 			break;
