@@ -13,7 +13,6 @@ var chunky = 0;
 var chunkmap = [];
 var protomap = [];
 var tempmaprow = [];
-var protorow = [];
 
 //Map Gen
 function genMap(xlim, ylim) {
@@ -42,9 +41,7 @@ function keys(event) {
 			else if (((chary > 0) == false) && (chunkExists(chunkx, chunky-1) != false)) {
 				chunky-=1;
 				chary=(canvas.height-16);
-				protoline = protomap[0];
 				protomap = chunkExists(chunkx, chunky);
-				protomap.push(protoline);
 				drawMap(protomap);
 				ctx.drawImage(char, 0, 0 , 14, 16, charx, chary, 14, 16);
 				break;
@@ -52,11 +49,9 @@ function keys(event) {
 			else if (((chary > 0) == false) && (chunkExists(chunkx, chunky-1) == false)) {
 				chunky-=1;
 				chary=(canvas.height-16);
-				protoline = protomap[0];
 				protomap = [];
-				genMap(Math.floor(canvas.width/16), Math.floor(canvas.height/16)-1);
+				genMap(Math.floor(canvas.width/16), Math.floor(canvas.height/16));
 				chunkmap.push([chunkx, chunky, protomap]);
-				protomap.push(protoline);
 				drawMap(protomap);
 				ctx.drawImage(char, 0, 0 , 14, 16, charx, chary, 14, 16);
 				break;
@@ -72,14 +67,7 @@ function keys(event) {
 			else if (((charx > 16) == false) && (chunkExists(chunkx-1, chunky) != false)) {
 				chunkx-=1;
 				charx=(canvas.width-15);
-				protoline = [];
-				for (var h = 0; h < protomap.length; h++) {
-					protoline.push(protomap[h][0]);
-				}
 				protomap = chunkExists(chunkx, chunky);
-				for (var g = 0; g < protomap; g++) {
-					protomap[g].push(protoline[g]);
-				}
 				drawMap(protomap);
 				ctx.drawImage(char, 0, 0 , 14, 16, charx, chary, 14, 16);
 				break;
@@ -87,16 +75,9 @@ function keys(event) {
 			else if (((charx > 16) == false) && (chunkExists(chunkx-1, chunky) == false)) {
 				chunkx-=1;
 				charx=(canvas.width-15);
-				protoline = [];
-				for (var f = 0; f < protomap.length; f++) {
-					protoline.push(protomap[f][0]);
-				}
 				protomap = [];
-				genMap(Math.floor(canvas.width/16)-1, Math.floor(canvas.height/16));
+				genMap(Math.floor(canvas.width/16), Math.floor(canvas.height/16));
 				chunkmap.push([chunkx, chunky, protomap]);
-				for (var e = 0; e < protomap; e++) {
-					protomap[e].push(protoline[e]);
-				}
 				drawMap(protomap);
 				ctx.drawImage(char, 0, 0 , 14, 16, charx, chary, 14, 16);
 				break;
@@ -112,9 +93,7 @@ function keys(event) {
 			else if (((chary + 16 < canvas.height) == false) && (chunkExists(chunkx, chunky+1) != false)) {
 				chunky+=1;
 				chary=0;
-				protoline = protomap[protomap.length-1];
 				protomap = chunkExists(chunkx, chunky);
-				protomap.splice(0, 0, protoline);
 				drawMap(protomap);
 				ctx.drawImage(char, 0, 0 , 14, 16, charx, chary, 14, 16);
 				break;
@@ -122,11 +101,9 @@ function keys(event) {
 			else if (((chary + 16 < canvas.height) == false) && (chunkExists(chunkx, chunky+1) == false)) {
 				chunky+=1;
 				chary=0;
-				protoline = protomap[protomap.length-1];
 				protomap = [];
-				genMap(Math.floor(canvas.width/16), Math.floor(canvas.height/16)-1);
+				genMap(Math.floor(canvas.width/16), Math.floor(canvas.height/16));
 				chunkmap.push([chunkx, chunky, protomap]);
-				protomap.splice(0, 0, protoline);
 				drawMap(protomap);
 				ctx.drawImage(char, 0, 0 , 14, 16, charx, chary, 14, 16);
 				break;
@@ -142,14 +119,7 @@ function keys(event) {
 			else if (((charx + 30 < canvas.width) == false) && (chunkExists(chunkx+1, chunky) != false)) {
 				chunkx+=1;
 				charx=1;
-				protoline = [];
-				for (var d = 0; d < protomap.length; d++) {
-					protoline.push(protomap[d][protomap[d].length-1]);
-				}
 				protomap = chunkExists(chunkx, chunky);
-				for (var c = 0; c < protomap; c++) {
-					protomap[c].splice(0, 0, protoline[c]);
-				}
 				drawMap(protomap);
 				ctx.drawImage(char, 0, 0 , 14, 16, charx, chary, 14, 16);
 				break;
@@ -157,16 +127,9 @@ function keys(event) {
 			else if (((charx + 30 < canvas.width) == false) && (chunkExists(chunkx+1, chunky) == false)) {
 				chunkx+=1;
 				charx=1;
-				protoline = [];
-				for (var b = 0; b < protomap.length; b++) {
-					protoline.push(protomap[b][protomap[b].length-1]);
-				}
 				protomap = [];
-				genMap(Math.floor(canvas.width/16)-1, Math.floor(canvas.height/16));
+				genMap(Math.floor(canvas.width/16), Math.floor(canvas.height/16));
 				chunkmap.push([chunkx, chunky, protomap]);
-				for (var a = 0; a < protomap; a++) {
-					protomap[a].splice(0, 0, protoline[a]);
-				}
 				drawMap(protomap);
 				ctx.drawImage(char, 0, 0 , 14, 16, charx, chary, 14, 16);
 				break;
