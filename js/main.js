@@ -1,13 +1,16 @@
-//Canvassy stuff
+//Canvas initialisation
 var canvas = document.getElementById("canvas");
-canvas.width = Math.floor((window.innerWidth-40)/16)*16;
-canvas.height = Math.floor((window.innerHeight-40)/16)*16;
+canvas.width = Math.floor((window.innerWidth-80)/16)*16;
+canvas.height = Math.floor((window.innerHeight-80)/16)*16;
 var ctx = canvas.getContext("2d");
+//Getting images
 var char = document.getElementById("char");
 var rock = document.getElementById("rock");
 var grass = document.getElementById("grass");
+//Character positions
 var charx = 1.0;
 var chary = 0.0;
+//Chunk and world gen variables
 var chunkx = 0;
 var chunky = 0;
 var chunkmap = [];
@@ -22,6 +25,9 @@ function genMap(xlim, ylim) {
 		}
 		protomap.push(tempmaprow);
 		tempmaprow = [];
+	}
+	if ((chunkx==0) && (chunky==0)){
+		protomap[0][0]=1;
 	}
 }
 genMap(Math.floor(canvas.width/16), Math.floor(canvas.height/16));
@@ -208,6 +214,8 @@ function drawMap(map) {
 		}
 	}
 }
+
+//Chunk detection
 function chunkExists(x, y) {
 	for (var i = 0; i < chunkmap.length; i++) {
 		if ((chunkmap[i][0] == x) && (chunkmap[i][1] == y)) {

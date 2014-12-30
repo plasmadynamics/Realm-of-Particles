@@ -1,7 +1,7 @@
 Realm-of-Particles
 ==================
 
-2D Exploration Game using the HTML5 Canvas by Rasmus 'thePlasm' Jepsen for plasmadynamics.
+A 2D Exploration/Magic browser game using the HTML5 Canvas by Rasmus 'thePlasm' Jepsen for plasmadynamics.
 
 You can play it [here](plasmadynamics.github.io/Realm-of-Particles)
 
