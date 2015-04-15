@@ -227,37 +227,59 @@ function tick() {
 		dispEnd();
 		clearInterval(loop);
 	}
-	for (mona = 0; mona < monsters.length; mona++) {
-		dirs = [];
-		if (protomap[monsters[mona][0]+1][monsters[mona][1]] == 1 && monsters[mona][0]+1 < protomap.length) {
-			dirs.push('d');
-		}
-		if (protomap[monsters[mona][0]-1][monsters[mona][1]] == 1 && monsters[mona][0]-1 >= 0) {
-			dirs.push('u');
-		}
-		if (protomap[monsters[mona][0]][monsters[mona][1]-1] == 1 && monsters[mona][1]-1 >= 0) {
-			dirs.push('l');
-		}
-		if (protomap[monsters[mona][0]][monsters[mona][1]+1] == 1 && monsters[mona][1]+1 < protomap[0].length) {
-			dirs.push('r');
-		}
-		dir = Math.random()*(dirs.length-1);
-		dir = dirs[Math.round(dir)];
-		if (dir='d') {
-			protomap[monsters[mona][0]][monsters[mona][1]] = 1;
-			protomap[monsters[mona][0]+1][monsters[mona][1]] = 2;
-		}
-		else if (dir='u') {
-			protomap[monsters[mona][0]][monsters[mona][1]] = 1;
-			protomap[monsters[mona][0]-1][monsters[mona][1]] = 2;
-		}
-		else if (dir='l') {
-			protomap[monsters[mona][0]][monsters[mona][1]] = 1;
-			protomap[monsters[mona][0]][monsters[mona][1]-1] = 2;
-		}
-		else if (dir='r') {
-			protomap[monsters[mona][0]][monsters[mona][1]] = 1;
-			protomap[monsters[mona][0]][monsters[mona][1]+1] = 2;
+	if (badcounter >= 30) {
+		monsters.forEach(function(item){
+			dirs = [];
+			if (item[0]+1 < protomap.length) {
+				if (protomap[item[0]+1][item[1]] == 1 && item[0]+1 != chary/16) {
+					dirs.push('d');
+				}
+			}
+			if (item[0]-1 >= 0) {
+				if (protomap[item[0]-1][item[1]] == 1 && item[0]-1 != chary/16) {
+					dirs.push('u');
+				}
+			}
+			if (item[1]-1 >= 0) {
+				if (protomap[item[0]][item[1]-1] == 1 && item[1]-1 != (charx-1)/16) {
+					dirs.push('l');
+				}
+			}
+			if (item[1]+1 < protomap[0].length) {
+				if (protomap[item[0]][item[1]+1] == 1 && item[1]+1 != (charx-1)/16) {
+					dirs.push('r');
+				}
+			}
+			dirnum = Math.random()*(dirs.length-1);
+			dir = dirs[Math.round(dirnum)];
+			if (dir=='d') {
+				protomap[item[0]][item[1]] = 1;
+				protomap[item[0]+1][item[1]] = 2;
+			}
+			else if (dir=='u') {
+				protomap[item[0]][item[1]] = 1;
+				protomap[item[0]-1][item[1]] = 2;
+			}
+			else if (dir=='l') {
+				protomap[item[0]][item[1]] = 1;
+				protomap[item[0]][item[1]-1] = 2;
+			}
+			else if (dir=='r') {
+				protomap[item[0]][item[1]] = 1;
+				protomap[item[0]][item[1]+1] = 2;
+			}
+		});
+		badcounter = 0;
+	}
+	else if (badcounter < 30) {
+		badcounter++;
+	}
+	monsters=[];
+	for (monproa = 0; monproa < protomap.length; monproa++) {
+		for (monprob = 0; monprob < protomap[monproa].length; monprob++) {
+			if (protomap[monproa][monprob] == 2) {
+				monsters.push([monproa, monprob]);
+			}
 		}
 	}
 	drawMap(protomap);
