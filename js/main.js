@@ -61,6 +61,44 @@ function dispEnd() {
 	ctx.fillStyle = "#FF0000";
 	ctx.fillRect(0, 0, canvas.width, canvas.height);
 }
+//Check monster vision
+function monSee(x, y) {
+	if ((charx-1)/16 == x) {
+		if (y < chary/16) {
+			for (tempy = y+1; tempy < chary/16; tempy++) {
+				if (protomap[tempy][(charx-1)/16] != 1) {
+					return false;
+				}
+			}
+		}
+		if (y > chary/16) {
+			for (tempy = y-1; tempy > chary/16; tempy--) {
+				if (protomap[tempy][(charx-1)/16] != 1) {
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+	if (chary/16 == y) {
+		if (x < (charx-1)/16) {
+			for (tempx = x+1; tempx < (charx-1)/16; tempx++) {
+				if (protomap[chary/16][tempx] != 1) {
+					return false;
+				}
+			}
+		}
+		if (x > (charx-1)/16) {
+			for (tempx = x-1; tempx > (charx-1)/16; tempx--) {
+				if (protomap[chary/16][tempx] != 1) {
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+	return false;
+}
 //Game loop
 function tick() {
 	drawMap(protomap);
@@ -227,46 +265,71 @@ function tick() {
 		dispEnd();
 		clearInterval(loop);
 	}
+	//Monster movement
 	if (badcounter >= 30) {
-		monsters.forEach(function(item){
-			dirs = [];
-			if (item[0]+1 < protomap.length) {
-				if (protomap[item[0]+1][item[1]] == 1 && item[0]+1 != chary/16) {
-					dirs.push('d');
+		monsters.forEach(function(item) {
+			if (monSee(item[1], item[0])) {
+				if (item[0] == chary/16) {
+					if (item[1] < (charx-1)/16 && item[1]+1 != (charx-1)/16 && protomap[item[0]][item[1]+1] == 1) {
+						protomap[item[0]][item[1]] = 1;
+						protomap[item[0]][item[1]+1] = 2;
+					}
+					if (item[1] > (charx-1)/16 && item[1]-1 != (charx-1)/16 && protomap[item[0]][item[1]-1] == 1) {
+						protomap[item[0]][item[1]] = 1;
+						protomap[item[0]][item[1]-1] = 2;
+					}
+				}
+				else if (item[1] == (charx-1)/16) {
+					if (item[0] < chary/16 && item[0]+1 != chary/16 && protomap[item[0]+1][item[1]] == 1) {
+						protomap[item[0]][item[1]] = 1;
+						protomap[item[0]+1][item[1]] = 2;
+					}
+					if (item[0] > chary/16 && item[0]-1 != chary/16 && protomap[item[0]-1][item[1]] == 1) {
+						protomap[item[0]][item[1]] = 1;
+						protomap[item[0]-1][item[1]] = 2;
+					}
 				}
 			}
-			if (item[0]-1 >= 0) {
-				if (protomap[item[0]-1][item[1]] == 1 && item[0]-1 != chary/16) {
-					dirs.push('u');
+			else {
+				dirs = [];
+				if (item[0]+1 < protomap.length) {
+					if (protomap[item[0]+1][item[1]] == 1 && !(item[0]+1 == chary/16 && item[1] == (charx-1)/16)) {
+						dirs.push('d');
+					}
 				}
-			}
-			if (item[1]-1 >= 0) {
-				if (protomap[item[0]][item[1]-1] == 1 && item[1]-1 != (charx-1)/16) {
-					dirs.push('l');
+				if (item[0]-1 >= 0) {
+					if (protomap[item[0]-1][item[1]] == 1 && !(item[0]-1 == chary/16 && item[1] == (charx-1)/16)) {
+						dirs.push('u');
+					}
 				}
-			}
-			if (item[1]+1 < protomap[0].length) {
-				if (protomap[item[0]][item[1]+1] == 1 && item[1]+1 != (charx-1)/16) {
-					dirs.push('r');
+				if (item[1]-1 >= 0) {
+					if (protomap[item[0]][item[1]-1] == 1 && !(item[0] == chary/16 && item[1]-1 == (charx-1)/16)) {
+						dirs.push('l');
+					}
 				}
-			}
-			dirnum = Math.random()*(dirs.length-1);
-			dir = dirs[Math.round(dirnum)];
-			if (dir=='d') {
-				protomap[item[0]][item[1]] = 1;
-				protomap[item[0]+1][item[1]] = 2;
-			}
-			else if (dir=='u') {
-				protomap[item[0]][item[1]] = 1;
-				protomap[item[0]-1][item[1]] = 2;
-			}
-			else if (dir=='l') {
-				protomap[item[0]][item[1]] = 1;
-				protomap[item[0]][item[1]-1] = 2;
-			}
-			else if (dir=='r') {
-				protomap[item[0]][item[1]] = 1;
-				protomap[item[0]][item[1]+1] = 2;
+				if (item[1]+1 < protomap[0].length) {
+					if (protomap[item[0]][item[1]+1] == 1 && !(item[0] == chary/16 && item[1]+1 == (charx-1)/16)) {
+						dirs.push('r');
+					}
+				}
+				dirnum = Math.random()*(dirs.length-1);
+				dir = dirs[Math.round(dirnum)];
+				if (dir=='d') {
+					protomap[item[0]][item[1]] = 1;
+					protomap[item[0]+1][item[1]] = 2;
+				}
+				else if (dir=='u') {
+					protomap[item[0]][item[1]] = 1;
+					protomap[item[0]-1][item[1]] = 2;
+				}
+				else if (dir=='l') {
+					protomap[item[0]][item[1]] = 1;
+					protomap[item[0]][item[1]-1] = 2;
+				}
+				else if (dir=='r') {
+					protomap[item[0]][item[1]] = 1;
+					protomap[item[0]][item[1]+1] = 2;
+				}
 			}
 		});
 		badcounter = 0;
