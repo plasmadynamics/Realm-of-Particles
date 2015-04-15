@@ -8,6 +8,7 @@ var loop = 0;
 var char = document.getElementById("char");
 var rock = document.getElementById("rock");
 var grass = document.getElementById("grass");
+var bad = document.getElementById("bad");
 //Character positions
 var charx = 1.0;
 var chary = 0.0;
@@ -17,6 +18,10 @@ var chunky = 0;
 var chunkmap = [];
 var protomap = [];
 var tempmaprow = [];
+var maprand = 0;
+var badcounter = 0;
+var monsters = [];
+var mapindex = 0;
 //Keyboard
 var wpress = false;
 var apress = false;
@@ -25,9 +30,20 @@ var dpress = false;
 
 //Map Gen
 function genMap(xlim, ylim) {
+	monsters = [];
 	for (k=0; k<ylim; k++) {
 		for (l=0; l<xlim; l++) {
-			tempmaprow.push(Math.round((Math.random()*3/4)+0.25));
+			maprand = Math.random();
+			if (maprand <= 0.75) {
+				tempmaprow.push(1);
+			}
+			if (maprand > 0.75 && maprand <= 1 - 2/495) {
+				tempmaprow.push(0);
+			}
+			if (maprand > 1 - 2/495 && maprand <= 1) {
+				tempmaprow.push(2);
+				monsters.push([k, l]);
+			}
 		}
 		protomap.push(tempmaprow);
 		tempmaprow = [];
@@ -39,7 +55,7 @@ function genMap(xlim, ylim) {
 genMap(Math.floor(canvas.width/16), Math.floor(canvas.height/16));
 chunkmap.push([chunkx, chunky, protomap]);
 drawMap(protomap);
-ctx.drawImage(char, 0, 0, 14, 16, charx, chary, 14, 16);
+ctx.drawImage(char, 0, 0 , 14, 16, charx, chary, 14, 16);
 //End display
 function dispEnd() {
 	ctx.fillStyle = "#FF0000";
@@ -47,40 +63,41 @@ function dispEnd() {
 }
 //Game loop
 function tick() {
+	drawMap(protomap);
+	ctx.drawImage(char, 0, 0 , 14, 16, charx, chary, 14, 16);
 	if (Key.isDown(Key.W) && !wpress) {
 		wpress = true;
 		if ((chary > 0) && (protomap[(chary-16)/16][(charx-1)/16] == 1)) {
 			chary-=16;
-			drawMap(protomap);
-			ctx.drawImage(char, 0, 0 , 14, 16, charx, chary, 14, 16);
 		}
 		else if (((chary > 0) == false) && (chunkExists(chunkx, chunky-1) != false)) {
+			chunkmap[mapindex] = [chunkx, chunky, protomap, monsters, mapindex];
 			chunky-=1;
 			chary=(canvas.height-16);
-			protomap = chunkExists(chunkx, chunky);
-			drawMap(protomap);
-			ctx.drawImage(char, 0, 0 , 14, 16, charx, chary, 14, 16);
+			protomap = chunkExists(chunkx, chunky)[2];
+			monsters = chunkExists(chunkx, chunky)[3];
+			mapindex = chunkExists(chunkx, chunky)[4];
 			if (protomap[chary/16][(charx-1)/16] == 0) {
 				chunky+=1;
 				chary=0;
-				protomap = chunkExists(chunkx, chunky);
-				drawMap(protomap);
-				ctx.drawImage(char, 0, 0 , 14, 16, charx, chary, 14, 16);
+				protomap = chunkExists(chunkx, chunky)[2];
+				monsters = chunkExists(chunkx, chunky)[3];
+				mapindex = chunkExists(chunkx, chunky)[4];
 			}
 		}
 		else if (((chary > 0) == false) && (chunkExists(chunkx, chunky-1) == false)) {
+			chunkmap[mapindex] = [chunkx, chunky, protomap, monsters, mapindex];
 			chunky-=1;
 			chary=(canvas.height-16);
 			protomap = [];
 			genMap(Math.floor(canvas.width/16), Math.floor(canvas.height/16));
-			chunkmap.push([chunkx, chunky, protomap]);
-			drawMap(protomap);
-			ctx.drawImage(char, 0, 0 , 14, 16, charx, chary, 14, 16);
+			chunkmap.push([chunkx, chunky, protomap, monsters, chunkmap.length]);
 			if (protomap[chary/16][(charx-1)/16] == 0) {
 				chunky+=1;
 				chary=0;
-				protomap = chunkExists(chunkx, chunky);
-				ctx.drawImage(char, 0, 0 , 14, 16, charx, chary, 14, 16);
+				protomap = chunkExists(chunkx, chunky)[2];
+				monsters = chunkExists(chunkx, chunky)[3];
+				mapindex = chunkExists(chunkx, chunky)[4];
 			}
 		}
 	}
@@ -91,37 +108,35 @@ function tick() {
 		apress = true;
 		if ((charx > 16) && (protomap[chary/16][(charx-17)/16] == 1)) {
 			charx-=16;
-			drawMap(protomap);
-			ctx.drawImage(char, 0, 0, 14, 16, charx, chary, 14, 16);
 		}
 		else if (((charx > 16) == false) && (chunkExists(chunkx-1, chunky) != false)) {
+			chunkmap[mapindex] = [chunkx, chunky, protomap, monsters, mapindex];
 			chunkx-=1;
 			charx=(canvas.width-15);
-			protomap = chunkExists(chunkx, chunky);
-			drawMap(protomap);
-			ctx.drawImage(char, 0, 0 , 14, 16, charx, chary, 14, 16);
+			protomap = chunkExists(chunkx, chunky)[2];
+			monsters = chunkExists(chunkx, chunky)[3];
+			mapindex = chunkExists(chunkx, chunky)[4];
 			if (protomap[chary/16][(charx-1)/16] == 0) {
 				chunkx+=1;
 				charx=1;
-				protomap = chunkExists(chunkx, chunky);
-				drawMap(protomap);
-				ctx.drawImage(char, 0, 0 , 14, 16, charx, chary, 14, 16);
+				protomap = chunkExists(chunkx, chunky)[2];
+				monsters = chunkExists(chunkx, chunky)[3];
+				mapindex = chunkExists(chunkx, chunky)[4];
 			}
 		}
 		else if (((charx > 16) == false) && (chunkExists(chunkx-1, chunky) == false)) {
+			chunkmap[mapindex] = [chunkx, chunky, protomap, monsters, mapindex];
 			chunkx-=1;
 			charx=(canvas.width-15);
 			protomap = [];
 			genMap(Math.floor(canvas.width/16), Math.floor(canvas.height/16));
-			chunkmap.push([chunkx, chunky, protomap]);
-			drawMap(protomap);
-			ctx.drawImage(char, 0, 0 , 14, 16, charx, chary, 14, 16);
+			chunkmap.push([chunkx, chunky, protomap, monsters, chunkmap.length]);
 			if (protomap[chary/16][(charx-1)/16] == 0) {
 				chunkx+=1;
 				charx=1;
-				protomap = chunkExists(chunkx, chunky);
-				drawMap(protomap);
-				ctx.drawImage(char, 0, 0 , 14, 16, charx, chary, 14, 16);
+				protomap = chunkExists(chunkx, chunky)[2];
+				monsters = chunkExists(chunkx, chunky)[3];
+				mapindex = chunkExists(chunkx, chunky)[4];
 			}
 		}
 	}
@@ -132,37 +147,35 @@ function tick() {
 		spress = true;
 		if ((chary+16 < canvas.height) && (protomap[(chary+16)/16][(charx-1)/16] == 1)) {
 			chary+=16;
-			drawMap(protomap);
-			ctx.drawImage(char, 0, 0, 14, 16, charx, chary, 14, 16);
 		}
 		else if (((chary + 16 < canvas.height) == false) && (chunkExists(chunkx, chunky+1) != false)) {
+			chunkmap[mapindex] = [chunkx, chunky, protomap, monsters, mapindex];
 			chunky+=1;
 			chary=0;
-			protomap = chunkExists(chunkx, chunky);
-			drawMap(protomap);
-			ctx.drawImage(char, 0, 0 , 14, 16, charx, chary, 14, 16);
+			protomap = chunkExists(chunkx, chunky)[2];
+			monsters = chunkExists(chunkx, chunky)[3];
+			mapindex = chunkExists(chunkx, chunky)[4];
 			if (protomap[chary/16][(charx-1)/16] == 0) {
 				chunky-=1;
 				chary=(canvas.height-16);
-				protomap = chunkExists(chunkx, chunky);
-				drawMap(protomap);
-				ctx.drawImage(char, 0, 0 , 14, 16, charx, chary, 14, 16);
+				protomap = chunkExists(chunkx, chunky)[2];
+				monsters = chunkExists(chunkx, chunky)[3];
+				mapindex = chunkExists(chunkx, chunky)[4];
 			}
 		}
 		else if (((chary + 16 < canvas.height) == false) && (chunkExists(chunkx, chunky+1) == false)) {
+			chunkmap[mapindex] = [chunkx, chunky, protomap, monsters, mapindex];
 			chunky+=1;
 			chary=0;
 			protomap = [];
 			genMap(Math.floor(canvas.width/16), Math.floor(canvas.height/16));
-			chunkmap.push([chunkx, chunky, protomap]);
-			drawMap(protomap);
-			ctx.drawImage(char, 0, 0 , 14, 16, charx, chary, 14, 16);
+			chunkmap.push([chunkx, chunky, protomap, monsters, chunkmap.length]);
 			if (protomap[chary/16][(charx-1)/16] == 0) {
 				chunky-=1;
 				chary=(canvas.height-16);
-				protomap = chunkExists(chunkx, chunky);
-				drawMap(protomap);
-				ctx.drawImage(char, 0, 0 , 14, 16, charx, chary, 14, 16);
+				protomap = chunkExists(chunkx, chunky)[2];
+				monsters = chunkExists(chunkx, chunky)[3];
+				mapindex = chunkExists(chunkx, chunky)[4];
 			}
 		}
 	}
@@ -173,37 +186,37 @@ function tick() {
 		dpress = true;
 		if ((charx+1 < canvas.width) && (protomap[chary/16][(charx+15)/16] == 1)) {
 			charx+=16;
-			drawMap(protomap);
-			ctx.drawImage(char, 0, 0, 14, 16, charx, chary, 14, 16);
 		}
 		else if (((charx + 30 < canvas.width) == false) && (chunkExists(chunkx+1, chunky) != false)) {
+			chunkmap[mapindex] = [chunkx, chunky, protomap, monsters, mapindex];
 			chunkx+=1;
 			charx=1;
-			protomap = chunkExists(chunkx, chunky);
-			drawMap(protomap);
-			ctx.drawImage(char, 0, 0 , 14, 16, charx, chary, 14, 16);
+			protomap = chunkExists(chunkx, chunky)[2];
+			monsters = chunkExists(chunkx, chunky)[3];
+			mapindex = chunkExists(chunkx, chunky)[4];
 			if (protomap[chary/16][(charx-1)/16] == 0) {
 				chunkx-=1;
 				charx=(canvas.width-15);
-				protomap = chunkExists(chunkx, chunky);
-				drawMap(protomap);
-				ctx.drawImage(char, 0, 0 , 14, 16, charx, chary, 14, 16);
+				protomap = chunkExists(chunkx, chunky)[2];
+				monsters = chunkExists(chunkx, chunky)[3];
+				mapindex = chunkExists(chunkx, chunky)[4];
 			}
 		}
 		else if (((charx + 30 < canvas.width) == false) && (chunkExists(chunkx+1, chunky) == false)) {
+			chunkmap[mapindex] = [chunkx, chunky, protomap, monsters, mapindex];
 			chunkx+=1;
 			charx=1;
 			protomap = [];
 			genMap(Math.floor(canvas.width/16), Math.floor(canvas.height/16));
-			chunkmap.push([chunkx, chunky, protomap]);
-			drawMap(protomap);
-			ctx.drawImage(char, 0, 0 , 14, 16, charx, chary, 14, 16);
+			chunkmap.push([chunkx, chunky, protomap, monsters, chunkmap.length]);
 			if (protomap[chary/16][(charx-1)/16] == 0) {
+				chunkmap[mapindex] = [];
 				chunkx-=1;
 				charx=(canvas.width-15);
-				protomap = chunkExists(chunkx, chunky);
-				drawMap(protomap);
-				ctx.drawImage(char, 0, 0 , 14, 16, charx, chary, 14, 16);
+				chunkmap[mapindex] = [];
+				protomap = chunkExists(chunkx, chunky)[2];
+				monsters = chunkExists(chunkx, chunky)[3];
+				mapindex = chunkExists(chunkx, chunky)[4];
 			}
 		}
 	}
@@ -214,6 +227,41 @@ function tick() {
 		dispEnd();
 		clearInterval(loop);
 	}
+	for (mona = 0; mona < monsters.length; mona++) {
+		dirs = [];
+		if (protomap[monsters[mona][0]+1][monsters[mona][1]] == 1 && monsters[mona][0]+1 < protomap.length) {
+			dirs.push('d');
+		}
+		if (protomap[monsters[mona][0]-1][monsters[mona][1]] == 1 && monsters[mona][0]-1 >= 0) {
+			dirs.push('u');
+		}
+		if (protomap[monsters[mona][0]][monsters[mona][1]-1] == 1 && monsters[mona][1]-1 >= 0) {
+			dirs.push('l');
+		}
+		if (protomap[monsters[mona][0]][monsters[mona][1]+1] == 1 && monsters[mona][1]+1 < protomap[0].length) {
+			dirs.push('r');
+		}
+		dir = Math.random()*(dirs.length-1);
+		dir = dirs[Math.round(dir)];
+		if (dir='d') {
+			protomap[monsters[mona][0]][monsters[mona][1]] = 1;
+			protomap[monsters[mona][0]+1][monsters[mona][1]] = 2;
+		}
+		else if (dir='u') {
+			protomap[monsters[mona][0]][monsters[mona][1]] = 1;
+			protomap[monsters[mona][0]-1][monsters[mona][1]] = 2;
+		}
+		else if (dir='l') {
+			protomap[monsters[mona][0]][monsters[mona][1]] = 1;
+			protomap[monsters[mona][0]][monsters[mona][1]-1] = 2;
+		}
+		else if (dir='r') {
+			protomap[monsters[mona][0]][monsters[mona][1]] = 1;
+			protomap[monsters[mona][0]][monsters[mona][1]+1] = 2;
+		}
+	}
+	drawMap(protomap);
+	ctx.drawImage(char, 0, 0 , 14, 16, charx, chary, 14, 16);
 }
 var Key = {
 _pressed: {},	
@@ -249,6 +297,9 @@ function drawMap(map) {
 			if (map[i][j] == 1) {
 				ctx.drawImage(grass, 0, 0, 16, 16, j*16, i*16, 16, 16);
 			}
+			if (map[i][j] == 2) {
+				ctx.drawImage(bad, 0, 0, 16, 16, j*16, i*16, 16, 16);
+			}
 		}
 	}
 }
@@ -257,7 +308,7 @@ function drawMap(map) {
 function chunkExists(x, y) {
 	for (var i = 0; i < chunkmap.length; i++) {
 		if ((chunkmap[i][0] == x) && (chunkmap[i][1] == y)) {
-			return chunkmap[i][2];
+			return chunkmap[i];
 		}
 	}
 	return false;
