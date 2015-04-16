@@ -22,6 +22,7 @@ var maprand = 0;
 var badcounter = 0;
 var monsters = [];
 var mapindex = 0;
+var tempmonsters = [];
 //Keyboard
 var wpress = false;
 var apress = false;
@@ -42,7 +43,7 @@ function genMap(xlim, ylim) {
 			}
 			if (maprand > 1 - 2/495 && maprand <= 1) {
 				tempmaprow.push(2);
-				monsters.push([k, l]);
+				monsters.push([k, l, 10]);
 			}
 		}
 		protomap.push(tempmaprow);
@@ -53,7 +54,7 @@ function genMap(xlim, ylim) {
 	}
 }
 genMap(Math.floor(canvas.width/16), Math.floor(canvas.height/16));
-chunkmap.push([chunkx, chunky, protomap]);
+chunkmap.push([chunkx, chunky, protomap, monsters, chunkmap.length]);
 drawMap(protomap);
 ctx.drawImage(char, 0, 0 , 14, 16, charx, chary, 14, 16);
 //End display
@@ -130,6 +131,7 @@ function tick() {
 			protomap = [];
 			genMap(Math.floor(canvas.width/16), Math.floor(canvas.height/16));
 			chunkmap.push([chunkx, chunky, protomap, monsters, chunkmap.length]);
+			mapindex = chunkmap.length-1;
 			if (protomap[chary/16][(charx-1)/16] == 0) {
 				chunky+=1;
 				chary=0;
@@ -169,6 +171,7 @@ function tick() {
 			protomap = [];
 			genMap(Math.floor(canvas.width/16), Math.floor(canvas.height/16));
 			chunkmap.push([chunkx, chunky, protomap, monsters, chunkmap.length]);
+			mapindex = chunkmap.length-1;
 			if (protomap[chary/16][(charx-1)/16] == 0) {
 				chunkx+=1;
 				charx=1;
@@ -208,6 +211,7 @@ function tick() {
 			protomap = [];
 			genMap(Math.floor(canvas.width/16), Math.floor(canvas.height/16));
 			chunkmap.push([chunkx, chunky, protomap, monsters, chunkmap.length]);
+			mapindex = chunkmap.length-1;
 			if (protomap[chary/16][(charx-1)/16] == 0) {
 				chunky-=1;
 				chary=(canvas.height-16);
@@ -247,6 +251,7 @@ function tick() {
 			protomap = [];
 			genMap(Math.floor(canvas.width/16), Math.floor(canvas.height/16));
 			chunkmap.push([chunkx, chunky, protomap, monsters, chunkmap.length]);
+			mapindex = chunkmap.length-1;
 			if (protomap[chary/16][(charx-1)/16] == 0) {
 				chunkmap[mapindex] = [];
 				chunkx-=1;
@@ -268,6 +273,7 @@ function tick() {
 	//Monster movement
 	if (badcounter >= 30) {
 		monsters.forEach(function(item) {
+			tempmonsters.push(item);
 			if (monSee(item[1], item[0])) {
 				if (item[0] == chary/16) {
 					if (item[1] < (charx-1)/16 && item[1]+1 != (charx-1)/16 && protomap[item[0]][item[1]+1] == 1) {
@@ -341,7 +347,11 @@ function tick() {
 	for (monproa = 0; monproa < protomap.length; monproa++) {
 		for (monprob = 0; monprob < protomap[monproa].length; monprob++) {
 			if (protomap[monproa][monprob] == 2) {
-				monsters.push([monproa, monprob]);
+				monsters.push([monproa, monprob, tempmonsters.forEach(function(item){
+					if (item[0] == monproa && item[1] == monprob) {
+						return item[2];
+					}
+				})]);
 			}
 		}
 	}
@@ -349,22 +359,22 @@ function tick() {
 	ctx.drawImage(char, 0, 0 , 14, 16, charx, chary, 14, 16);
 }
 var Key = {
-_pressed: {},	
+_pressed: {},
    	A: 65,
 	W: 87,
     D: 68,
     S: 83,
     SPACE: 32,
 	ESC: 27,
-    
+
     isDown: function(keyCode) {
 		return this._pressed[keyCode];
     },
-  
+
     onKeydown: function(keyevent) {
       this._pressed[keyevent.keyCode] = true;
     },
-  
+
     onKeyup: function(keyevent) {
       delete this._pressed[keyevent.keyCode];
     }
