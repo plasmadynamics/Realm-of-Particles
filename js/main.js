@@ -9,6 +9,7 @@ var char = document.getElementById("char");
 var rock = document.getElementById("rock");
 var grass = document.getElementById("grass");
 var bad = document.getElementById("bad");
+var heart = document.getElementById("heart");
 //Character positions
 var charx = 1.0;
 var chary = 0.0;
@@ -19,10 +20,12 @@ var chunkmap = [];
 var protomap = [];
 var tempmaprow = [];
 var maprand = 0;
+//Gameplay
 var badcounter = 0;
 var monsters = [];
 var mapindex = 0;
 var tempmonsters = [];
+var playerhp = 20;
 //Keyboard
 var wpress = false;
 var apress = false;
@@ -284,6 +287,9 @@ function tick() {
 						protomap[item[0]][item[1]] = 1;
 						protomap[item[0]][item[1]-1] = 2;
 					}
+					if (Math.abs(item[1] - (charx-1)/16) == 1) {
+						playerhp -= 0.5;
+					}
 				}
 				else if (item[1] == (charx-1)/16) {
 					if (item[0] < chary/16 && item[0]+1 != chary/16 && protomap[item[0]+1][item[1]] == 1) {
@@ -293,6 +299,9 @@ function tick() {
 					if (item[0] > chary/16 && item[0]-1 != chary/16 && protomap[item[0]-1][item[1]] == 1) {
 						protomap[item[0]][item[1]] = 1;
 						protomap[item[0]-1][item[1]] = 2;
+					}
+					if (Math.abs(item[0] - chary/16) == 1) {
+						playerhp -= 0.5;
 					}
 				}
 			}
