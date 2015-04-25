@@ -10,5 +10,18 @@ body {
 #canvas {
 	margin: 16px;
 	padding: 0px;
-	border: 16px solid #440044;
+	border: 16px solid #FF00FF;
+	border-bottom: 32px solid #FF00FF;
+}
+#hpbox {
+	height: 20px;
+	width: 64px;
+	background-color: #FFFFFF;
+	font-family: Impact, Charcoal, sans-serif;
+	color: #FF0000;
+	margin: auto;
+	border: 1px solid #880088;
+	position: absolute;
+	bottom: 32px;
+	right: 24px;
 }

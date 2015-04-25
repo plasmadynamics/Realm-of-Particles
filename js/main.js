@@ -1,5 +1,6 @@
-//Canvas initialisation
+//Canvas and UI initialisation
 var canvas = document.getElementById("canvas");
+var hpbox = document.getElementById("hpbox");
 canvas.width = Math.floor((window.innerWidth-80)/16)*16;
 canvas.height = Math.floor((window.innerHeight-80)/16)*16;
 var ctx = canvas.getContext("2d");
@@ -41,12 +42,15 @@ function genMap(xlim, ylim) {
 			if (maprand <= 0.75) {
 				tempmaprow.push(1);
 			}
-			if (maprand > 0.75 && maprand <= 1 - 2/495) {
+			if (maprand > 0.75 && maprand <= 1 - 3/500) {
 				tempmaprow.push(0);
 			}
-			if (maprand > 1 - 2/495 && maprand <= 1) {
+			if (maprand > 1 - 1/250 && maprand <= 1 - 1/500) {
 				tempmaprow.push(2);
 				monsters.push([k, l, 10]);
+			}
+			if (maprand > 1 - 1/500 && maprand <= 1) {
+				tempmaprow.push(3);
 			}
 		}
 		protomap.push(tempmaprow);
@@ -55,13 +59,23 @@ function genMap(xlim, ylim) {
 	if ((chunkx==0) && (chunky==0)){
 		protomap[0][0]=1;
 	}
+	for (i=0; i<protomap.length; i++) {
+		while (protomap[i].length < canvas.width/16) {
+			protomap[i].push(1);
+		}
+	}
 }
 genMap(Math.floor(canvas.width/16), Math.floor(canvas.height/16));
 chunkmap.push([chunkx, chunky, protomap, monsters, chunkmap.length]);
-drawMap(protomap);
+drawScreen(protomap);
 ctx.drawImage(char, 0, 0 , 14, 16, charx, chary, 14, 16);
 //End display
 function dispEnd() {
+	ctx.fillStyle = "#FF0000";
+	ctx.fillRect(0, 0, canvas.width, canvas.height);
+}
+//Game over
+function gameOver() {
 	ctx.fillStyle = "#FF0000";
 	ctx.fillRect(0, 0, canvas.width, canvas.height);
 }
@@ -105,11 +119,11 @@ function monSee(x, y) {
 }
 //Game loop
 function tick() {
-	drawMap(protomap);
+	drawScreen(protomap);
 	ctx.drawImage(char, 0, 0 , 14, 16, charx, chary, 14, 16);
 	if (Key.isDown(Key.W) && !wpress) {
 		wpress = true;
-		if ((chary > 0) && (protomap[(chary-16)/16][(charx-1)/16] == 1)) {
+		if (((chary > 0) && (protomap[(chary-16)/16][(charx-1)/16] == 1)) || ((chary > 0) && (protomap[(chary-16)/16][(charx-1)/16] == 3))) {
 			chary-=16;
 		}
 		else if (((chary > 0) == false) && (chunkExists(chunkx, chunky-1) != false)) {
@@ -119,7 +133,7 @@ function tick() {
 			protomap = chunkExists(chunkx, chunky)[2];
 			monsters = chunkExists(chunkx, chunky)[3];
 			mapindex = chunkExists(chunkx, chunky)[4];
-			if (protomap[chary/16][(charx-1)/16] == 0) {
+			if ((protomap[chary/16][(charx-1)/16] == 0) || (protomap[chary/16][(charx-1)/16] == 2)) {
 				chunky+=1;
 				chary=0;
 				protomap = chunkExists(chunkx, chunky)[2];
@@ -135,7 +149,7 @@ function tick() {
 			genMap(Math.floor(canvas.width/16), Math.floor(canvas.height/16));
 			chunkmap.push([chunkx, chunky, protomap, monsters, chunkmap.length]);
 			mapindex = chunkmap.length-1;
-			if (protomap[chary/16][(charx-1)/16] == 0) {
+			if ((protomap[chary/16][(charx-1)/16] == 0) || (protomap[chary/16][(charx-1)/16] == 2)) {
 				chunky+=1;
 				chary=0;
 				protomap = chunkExists(chunkx, chunky)[2];
@@ -149,7 +163,7 @@ function tick() {
 	}
 	if (Key.isDown(Key.A) && !apress) {
 		apress = true;
-		if ((charx > 16) && (protomap[chary/16][(charx-17)/16] == 1)) {
+		if (((charx > 16) && (protomap[chary/16][(charx-17)/16] == 1)) || ((charx > 16) && (protomap[chary/16][(charx-17)/16] == 3))) {
 			charx-=16;
 		}
 		else if (((charx > 16) == false) && (chunkExists(chunkx-1, chunky) != false)) {
@@ -159,7 +173,7 @@ function tick() {
 			protomap = chunkExists(chunkx, chunky)[2];
 			monsters = chunkExists(chunkx, chunky)[3];
 			mapindex = chunkExists(chunkx, chunky)[4];
-			if (protomap[chary/16][(charx-1)/16] == 0) {
+			if ((protomap[chary/16][(charx-1)/16] == 0) || (protomap[chary/16][(charx-1)/16] == 0)) {
 				chunkx+=1;
 				charx=1;
 				protomap = chunkExists(chunkx, chunky)[2];
@@ -175,7 +189,7 @@ function tick() {
 			genMap(Math.floor(canvas.width/16), Math.floor(canvas.height/16));
 			chunkmap.push([chunkx, chunky, protomap, monsters, chunkmap.length]);
 			mapindex = chunkmap.length-1;
-			if (protomap[chary/16][(charx-1)/16] == 0) {
+			if ((protomap[chary/16][(charx-1)/16] == 0) || (protomap[chary/16][(charx-1)/16] == 2)) {
 				chunkx+=1;
 				charx=1;
 				protomap = chunkExists(chunkx, chunky)[2];
@@ -189,7 +203,7 @@ function tick() {
 	}
 	if (Key.isDown(Key.S) && !spress) {
 		spress = true;
-		if ((chary+16 < canvas.height) && (protomap[(chary+16)/16][(charx-1)/16] == 1)) {
+		if (((chary+16 < canvas.height) && (protomap[(chary+16)/16][(charx-1)/16] == 1)) || ((chary+16 < canvas.height) && (protomap[(chary+16)/16][(charx-1)/16] == 3))) {
 			chary+=16;
 		}
 		else if (((chary + 16 < canvas.height) == false) && (chunkExists(chunkx, chunky+1) != false)) {
@@ -199,7 +213,7 @@ function tick() {
 			protomap = chunkExists(chunkx, chunky)[2];
 			monsters = chunkExists(chunkx, chunky)[3];
 			mapindex = chunkExists(chunkx, chunky)[4];
-			if (protomap[chary/16][(charx-1)/16] == 0) {
+			if ((protomap[chary/16][(charx-1)/16] == 0) || (protomap[chary/16][(charx-1)/16] == 2)) {
 				chunky-=1;
 				chary=(canvas.height-16);
 				protomap = chunkExists(chunkx, chunky)[2];
@@ -215,7 +229,7 @@ function tick() {
 			genMap(Math.floor(canvas.width/16), Math.floor(canvas.height/16));
 			chunkmap.push([chunkx, chunky, protomap, monsters, chunkmap.length]);
 			mapindex = chunkmap.length-1;
-			if (protomap[chary/16][(charx-1)/16] == 0) {
+			if ((protomap[chary/16][(charx-1)/16] == 0) || (protomap[chary/16][(charx-1)/16] == 2)) {
 				chunky-=1;
 				chary=(canvas.height-16);
 				protomap = chunkExists(chunkx, chunky)[2];
@@ -229,7 +243,7 @@ function tick() {
 	}
 	if (Key.isDown(Key.D) && !dpress) {
 		dpress = true;
-		if ((charx+1 < canvas.width) && (protomap[chary/16][(charx+15)/16] == 1)) {
+		if (((charx+1 < canvas.width) && (protomap[chary/16][(charx+15)/16] == 1)) || ((charx+1 < canvas.width) && (protomap[chary/16][(charx+15)/16] == 3))) {
 			charx+=16;
 		}
 		else if (((charx + 30 < canvas.width) == false) && (chunkExists(chunkx+1, chunky) != false)) {
@@ -239,7 +253,7 @@ function tick() {
 			protomap = chunkExists(chunkx, chunky)[2];
 			monsters = chunkExists(chunkx, chunky)[3];
 			mapindex = chunkExists(chunkx, chunky)[4];
-			if (protomap[chary/16][(charx-1)/16] == 0) {
+			if ((protomap[chary/16][(charx-1)/16] == 0) || (protomap[chary/16][(charx-1)/16] == 2)) {
 				chunkx-=1;
 				charx=(canvas.width-15);
 				protomap = chunkExists(chunkx, chunky)[2];
@@ -255,7 +269,7 @@ function tick() {
 			genMap(Math.floor(canvas.width/16), Math.floor(canvas.height/16));
 			chunkmap.push([chunkx, chunky, protomap, monsters, chunkmap.length]);
 			mapindex = chunkmap.length-1;
-			if (protomap[chary/16][(charx-1)/16] == 0) {
+			if ((protomap[chary/16][(charx-1)/16] == 0) || (protomap[chary/16][(charx-1)/16] == 2)) {
 				chunkmap[mapindex] = [];
 				chunkx-=1;
 				charx=(canvas.width-15);
@@ -288,7 +302,7 @@ function tick() {
 						protomap[item[0]][item[1]-1] = 2;
 					}
 					if (Math.abs(item[1] - (charx-1)/16) == 1) {
-						playerhp -= 0.5;
+						playerhp -= 4;
 					}
 				}
 				else if (item[1] == (charx-1)/16) {
@@ -301,7 +315,7 @@ function tick() {
 						protomap[item[0]-1][item[1]] = 2;
 					}
 					if (Math.abs(item[0] - chary/16) == 1) {
-						playerhp -= 0.5;
+						playerhp -= 4;
 					}
 				}
 			}
@@ -364,8 +378,22 @@ function tick() {
 			}
 		}
 	}
-	drawMap(protomap);
+	drawScreen(protomap);
 	ctx.drawImage(char, 0, 0 , 14, 16, charx, chary, 14, 16);
+	if (protomap[chary/16][(charx-1)/16] == 3) {
+		protomap[chary/16][(charx-1)/16] = 1;
+		playerhp += 5;
+		if (playerhp > 20) {
+			playerhp = 20;
+		}
+	}
+	if (playerhp <= 0) {
+		gameOver();
+	}
+	if (playerhp < 0) {
+		playerhp = 0;
+	}
+	hpbox.innerHTML = 'HP: ' + Math.ceil(playerhp).toString();
 }
 var Key = {
 _pressed: {},
@@ -392,7 +420,7 @@ window.addEventListener('keyup', function(event) { Key.onKeyup(event); }, false)
 window.addEventListener('keydown', function(event) { Key.onKeydown(event); }, false);
 
 //Map drawing
-function drawMap(map) {
+function drawScreen(map) {
 	for (var i=0; i<map.length; i++) {
 		for (var j=0; j<map[i].length; j++) {
 			if (map[i][j] == 0) {
@@ -403,6 +431,9 @@ function drawMap(map) {
 			}
 			if (map[i][j] == 2) {
 				ctx.drawImage(bad, 0, 0, 16, 16, j*16, i*16, 16, 16);
+			}
+			if (map[i][j] == 3) {
+				ctx.drawImage(heart, 0, 0, 16, 16, j*16, i*16, 16, 16);
 			}
 		}
 	}
