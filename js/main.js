@@ -71,11 +71,14 @@ drawScreen(protomap);
 ctx.drawImage(char, 0, 0 , 14, 16, charx, chary, 14, 16);
 //End display
 function dispEnd() {
-	ctx.fillStyle = "#FF0000";
+	clearInterval(loop);
+	ctx.fillStyle = "#000000";
 	ctx.fillRect(0, 0, canvas.width, canvas.height);
+	hpbox.hidden = true;
 }
 //Game over
 function gameOver() {
+	clearInterval(loop);
 	ctx.fillStyle = "#FF0000";
 	ctx.fillRect(0, 0, canvas.width, canvas.height);
 }
@@ -283,10 +286,6 @@ function tick() {
 	if (!Key.isDown(Key.D)) {
 		dpress = false;
 	}
-	if (Key.isDown(Key.ESC)) {
-		dispEnd();
-		clearInterval(loop);
-	}
 	//Monster movement
 	if (badcounter >= 30) {
 		monsters.forEach(function(item) {
@@ -394,6 +393,9 @@ function tick() {
 		playerhp = 0;
 	}
 	hpbox.innerHTML = 'HP: ' + Math.ceil(playerhp).toString();
+	if (Key.isDown(Key.ESC)) {
+		dispEnd();
+	}
 }
 var Key = {
 _pressed: {},
