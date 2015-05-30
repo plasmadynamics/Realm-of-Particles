@@ -25,3 +25,27 @@ body {
 	bottom: 32px;
 	right: 24px;
 }
+#manabox {
+	height: 20px;
+	width: 64px;
+	background-color: #FFFFFF;
+	font-family: Impact, Charcoal, sans-serif;
+	color: #0000FF;
+	margin: auto;
+	border: 1px solid #880088;
+	position: absolute;
+	bottom: 32px;
+	right: 88px;
+}
+#killbox {
+	height: 20px;
+	width: 64px;
+	background-color: #FFFFFF;
+	font-family: Impact, Charcoal, sans-serif;
+	color: #00FF00;
+	margin: auto;
+	border: 1px solid #880088;
+	position: absolute;
+	bottom: 32px;
+	right: 152px;
+}

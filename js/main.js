@@ -1,6 +1,8 @@
 //Canvas and UI initialisation
 var canvas = document.getElementById("canvas");
 var hpbox = document.getElementById("hpbox");
+var manabox = document.getElementById("manabox");
+var killbox = document.getElementById("killbox");
 canvas.width = Math.floor((window.innerWidth-80)/16)*16;
 canvas.height = Math.floor((window.innerHeight-80)/16)*16;
 var ctx = canvas.getContext("2d");
@@ -12,6 +14,7 @@ var grass = document.getElementById("grass");
 var bad = document.getElementById("bad");
 var heart = document.getElementById("heart");
 var attack = document.getElementById("attack");
+var mana = document.getElementById("mana");
 //Character positions
 var charx = 1.0;
 var chary = 0.0;
@@ -28,6 +31,8 @@ var monsters = [];
 var mapindex = 0;
 var tempmonsters = [];
 var playerhp = 20;
+var playermana = 20;
+var playerkills = 0;
 //Keyboard
 var wpress = false;
 var apress = false;
@@ -46,15 +51,18 @@ function genMap(xlim, ylim) {
 			if (maprand <= 0.75) {
 				tempmaprow.push(1);
 			}
-			if (maprand > 0.75 && maprand <= 1 - 3/500) {
+			if (maprand > 0.75 && maprand <= 1 - 1/125) {
 				tempmaprow.push(0);
 			}
-			if (maprand > 1 - 1/250 && maprand <= 1 - 1/500) {
+			if (maprand > 1 - 1/125 && maprand <= 1 - 1/250) {
 				tempmaprow.push(2);
 				monsters.push([k, l, 10]);
 			}
-			if (maprand > 1 - 1/500 && maprand <= 1) {
+			if (maprand > 1 - 1/250 && maprand <= 1 - 1/500) {
 				tempmaprow.push(3);
+			}
+			if (maprand > 1 - 1/500 && maprand <= 1) {
+				tempmaprow.push(4);
 			}
 		}
 		protomap.push(tempmaprow);
@@ -79,6 +87,7 @@ function dispEnd() {
 	ctx.fillStyle = "#000000";
 	ctx.fillRect(0, 0, canvas.width, canvas.height);
 	hpbox.hidden = true;
+	manabox.hidden = true;
 }
 //Game over
 function gameOver() {
@@ -129,7 +138,7 @@ function tick() {
 	if (Key.isDown(Key.W) && !wpress) {
 		playerdir = [0, -1];
 		wpress = true;
-		if (((chary > 0) && (protomap[(chary-16)/16][(charx-1)/16] == 1)) || ((chary > 0) && (protomap[(chary-16)/16][(charx-1)/16] == 3))) {
+		if (((chary > 0) && (protomap[(chary-16)/16][(charx-1)/16] == 1)) || ((chary > 0) && (protomap[(chary-16)/16][(charx-1)/16] == 3)) || ((chary > 0) && (protomap[(chary-16)/16][(charx-1)/16] == 4))) {
 			chary-=16;
 		}
 		else if (((chary > 0) == false) && (chunkExists(chunkx, chunky-1) != false)) {
@@ -170,7 +179,7 @@ function tick() {
 	if (Key.isDown(Key.A) && !apress) {
 		playerdir = [-1, 0];
 		apress = true;
-		if (((charx > 16) && (protomap[chary/16][(charx-17)/16] == 1)) || ((charx > 16) && (protomap[chary/16][(charx-17)/16] == 3))) {
+		if (((charx > 16) && (protomap[chary/16][(charx-17)/16] == 1)) || ((charx > 16) && (protomap[chary/16][(charx-17)/16] == 3)) || ((charx > 16) && (protomap[chary/16][(charx-17)/16] == 4))) {
 			charx-=16;
 		}
 		else if (((charx > 16) == false) && (chunkExists(chunkx-1, chunky) != false)) {
@@ -211,7 +220,7 @@ function tick() {
 	if (Key.isDown(Key.S) && !spress) {
 		playerdir = [0, 1];
 		spress = true;
-		if (((chary+16 < canvas.height) && (protomap[(chary+16)/16][(charx-1)/16] == 1)) || ((chary+16 < canvas.height) && (protomap[(chary+16)/16][(charx-1)/16] == 3))) {
+		if (((chary+16 < canvas.height) && (protomap[(chary+16)/16][(charx-1)/16] == 1)) || ((chary+16 < canvas.height) && (protomap[(chary+16)/16][(charx-1)/16] == 3)) || ((chary+16 < canvas.height) && (protomap[(chary+16)/16][(charx-1)/16] == 4))) {
 			chary+=16;
 		}
 		else if (((chary + 16 < canvas.height) == false) && (chunkExists(chunkx, chunky+1) != false)) {
@@ -252,7 +261,7 @@ function tick() {
 	if (Key.isDown(Key.D) && !dpress) {
 		playerdir = [1, 0];
 		dpress = true;
-		if (((charx+1 < canvas.width) && (protomap[chary/16][(charx+15)/16] == 1)) || ((charx+1 < canvas.width) && (protomap[chary/16][(charx+15)/16] == 3))) {
+		if (((charx+1 < canvas.width) && (protomap[chary/16][(charx+15)/16] == 1)) || ((charx+1 < canvas.width) && (protomap[chary/16][(charx+15)/16] == 3)) || ((charx+1 < canvas.width) && (protomap[chary/16][(charx+15)/16] == 4))) {
 			charx+=16;
 		}
 		else if (((charx + 30 < canvas.width) == false) && (chunkExists(chunkx+1, chunky) != false)) {
@@ -389,6 +398,13 @@ function tick() {
 			playerhp = 20;
 		}
 	}
+	if (protomap[chary/16][(charx-1)/16] == 4) {
+		protomap[chary/16][(charx-1)/16] = 1;
+		playermana += 5;
+		if (playerhp > 100) {
+			playerhp = 100;
+		}
+	}
 	if (playerhp <= 0) {
 		gameOver();
 	}
@@ -396,13 +412,19 @@ function tick() {
 		playerhp = 0;
 	}
 	hpbox.innerHTML = 'HP: ' + Math.ceil(playerhp).toString();
+	manabox.innerHTML = 'Mana: ' + Math.ceil(playermana).toString();
+	killbox.innerHTML = 'Kills: ' + Math.ceil(playerkills).toString();
 	if (Key.isDown(Key.ESC)) {
 		dispEnd();
 	}
-	if (Key.isDown(Key.SPACE)) {
+	if (Key.isDown(Key.SPACE) && playermana > 0) {
+		playermana -= 1/6;
+		if (playermana < 0) {
+			playermana = 0;
+		}
 		attacking = true;
 	}
-	if (!Key.isDown(Key.SPACE)) {
+	if (!Key.isDown(Key.SPACE) || playermana <= 0) {
 		attacking = false;
 	}
 }
@@ -446,6 +468,9 @@ function drawScreen(map) {
 			if (map[i][j] == 3) {
 				ctx.drawImage(heart, 0, 0, 16, 16, j*16, i*16, 16, 16);
 			}
+			if (map[i][j] == 4) {
+				ctx.drawImage(mana, 0, 0, 16, 16, j*16, i*16, 16, 16);
+			}
 		}
 	}
 	if (attacking) {
@@ -479,7 +504,13 @@ function drawScreen(map) {
 					monsters[q][2] -= 1/6;
 					if (monsters[q][2] <= 0) {
 						monsters.splice(q, 1);
-						protomap[chary/16+playerdir[1]][(charx-1)/16+playerdir[0]] = 3;
+						playerkills++;
+						if (Math.random > 0.5) {
+							protomap[chary/16+playerdir[1]][(charx-1)/16+playerdir[0]] = 3;
+						}
+						else {
+							protomap[chary/16+playerdir[1]][(charx-1)/16+playerdir[0]] = 4;
+						}
 					}
 				}
 			}
