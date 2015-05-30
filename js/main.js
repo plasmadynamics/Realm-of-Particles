@@ -15,6 +15,7 @@ var bad = document.getElementById("bad");
 var heart = document.getElementById("heart");
 var attack = document.getElementById("attack");
 var mana = document.getElementById("mana");
+var water = document.getElementById("water");
 //Character positions
 var charx = 1.0;
 var chary = 0.0;
@@ -51,8 +52,11 @@ function genMap(xlim, ylim) {
 			if (maprand <= 0.75) {
 				tempmaprow.push(1);
 			}
-			if (maprand > 0.75 && maprand <= 1 - 1/125) {
+			if (maprand > 0.75 && maprand <= 0.875) {
 				tempmaprow.push(0);
+			}
+			if (maprand > 0.875 && maprand <= 1 - 1/125) {
+				tempmaprow.push(5);
 			}
 			if (maprand > 1 - 1/125 && maprand <= 1 - 1/250) {
 				tempmaprow.push(2);
@@ -148,7 +152,7 @@ function tick() {
 			protomap = chunkExists(chunkx, chunky)[2];
 			monsters = chunkExists(chunkx, chunky)[3];
 			mapindex = chunkExists(chunkx, chunky)[4];
-			if ((protomap[chary/16][(charx-1)/16] == 0) || (protomap[chary/16][(charx-1)/16] == 2)) {
+			if ((protomap[chary/16][(charx-1)/16] == 0) || (protomap[chary/16][(charx-1)/16] == 2) || (protomap[chary/16][(charx-1)/16] == 5)) {
 				chunky+=1;
 				chary=0;
 				protomap = chunkExists(chunkx, chunky)[2];
@@ -164,7 +168,7 @@ function tick() {
 			genMap(Math.floor(canvas.width/16), Math.floor(canvas.height/16));
 			chunkmap.push([chunkx, chunky, protomap, monsters, chunkmap.length]);
 			mapindex = chunkmap.length-1;
-			if ((protomap[chary/16][(charx-1)/16] == 0) || (protomap[chary/16][(charx-1)/16] == 2)) {
+			if ((protomap[chary/16][(charx-1)/16] == 0) || (protomap[chary/16][(charx-1)/16] == 2) || (protomap[chary/16][(charx-1)/16] == 5)) {
 				chunky+=1;
 				chary=0;
 				protomap = chunkExists(chunkx, chunky)[2];
@@ -189,7 +193,7 @@ function tick() {
 			protomap = chunkExists(chunkx, chunky)[2];
 			monsters = chunkExists(chunkx, chunky)[3];
 			mapindex = chunkExists(chunkx, chunky)[4];
-			if ((protomap[chary/16][(charx-1)/16] == 0) || (protomap[chary/16][(charx-1)/16] == 0)) {
+			if ((protomap[chary/16][(charx-1)/16] == 0) || (protomap[chary/16][(charx-1)/16] == 2) || (protomap[chary/16][(charx-1)/16] == 5)) {
 				chunkx+=1;
 				charx=1;
 				protomap = chunkExists(chunkx, chunky)[2];
@@ -205,7 +209,7 @@ function tick() {
 			genMap(Math.floor(canvas.width/16), Math.floor(canvas.height/16));
 			chunkmap.push([chunkx, chunky, protomap, monsters, chunkmap.length]);
 			mapindex = chunkmap.length-1;
-			if ((protomap[chary/16][(charx-1)/16] == 0) || (protomap[chary/16][(charx-1)/16] == 2)) {
+			if ((protomap[chary/16][(charx-1)/16] == 0) || (protomap[chary/16][(charx-1)/16] == 2) || (protomap[chary/16][(charx-1)/16] == 5)) {
 				chunkx+=1;
 				charx=1;
 				protomap = chunkExists(chunkx, chunky)[2];
@@ -230,7 +234,7 @@ function tick() {
 			protomap = chunkExists(chunkx, chunky)[2];
 			monsters = chunkExists(chunkx, chunky)[3];
 			mapindex = chunkExists(chunkx, chunky)[4];
-			if ((protomap[chary/16][(charx-1)/16] == 0) || (protomap[chary/16][(charx-1)/16] == 2)) {
+			if ((protomap[chary/16][(charx-1)/16] == 0) || (protomap[chary/16][(charx-1)/16] == 2) || (protomap[chary/16][(charx-1)/16] == 5)) {
 				chunky-=1;
 				chary=(canvas.height-16);
 				protomap = chunkExists(chunkx, chunky)[2];
@@ -246,7 +250,7 @@ function tick() {
 			genMap(Math.floor(canvas.width/16), Math.floor(canvas.height/16));
 			chunkmap.push([chunkx, chunky, protomap, monsters, chunkmap.length]);
 			mapindex = chunkmap.length-1;
-			if ((protomap[chary/16][(charx-1)/16] == 0) || (protomap[chary/16][(charx-1)/16] == 2)) {
+			if ((protomap[chary/16][(charx-1)/16] == 0) || (protomap[chary/16][(charx-1)/16] == 2) || (protomap[chary/16][(charx-1)/16] == 5)) {
 				chunky-=1;
 				chary=(canvas.height-16);
 				protomap = chunkExists(chunkx, chunky)[2];
@@ -271,7 +275,7 @@ function tick() {
 			protomap = chunkExists(chunkx, chunky)[2];
 			monsters = chunkExists(chunkx, chunky)[3];
 			mapindex = chunkExists(chunkx, chunky)[4];
-			if ((protomap[chary/16][(charx-1)/16] == 0) || (protomap[chary/16][(charx-1)/16] == 2)) {
+			if ((protomap[chary/16][(charx-1)/16] == 0) || (protomap[chary/16][(charx-1)/16] == 2) || (protomap[chary/16][(charx-1)/16] == 5)) {
 				chunkx-=1;
 				charx=(canvas.width-15);
 				protomap = chunkExists(chunkx, chunky)[2];
@@ -287,7 +291,7 @@ function tick() {
 			genMap(Math.floor(canvas.width/16), Math.floor(canvas.height/16));
 			chunkmap.push([chunkx, chunky, protomap, monsters, chunkmap.length]);
 			mapindex = chunkmap.length-1;
-			if ((protomap[chary/16][(charx-1)/16] == 0) || (protomap[chary/16][(charx-1)/16] == 2)) {
+			if ((protomap[chary/16][(charx-1)/16] == 0) || (protomap[chary/16][(charx-1)/16] == 2) || (protomap[chary/16][(charx-1)/16] == 5)) {
 				chunkmap[mapindex] = [];
 				chunkx-=1;
 				charx=(canvas.width-15);
@@ -471,6 +475,9 @@ function drawScreen(map) {
 			if (map[i][j] == 4) {
 				ctx.drawImage(mana, 0, 0, 16, 16, j*16, i*16, 16, 16);
 			}
+			if (map[i][j] == 5) {
+				ctx.drawImage(water, 0, 0, 16, 16, j*16, i*16, 16, 16);
+			}
 		}
 	}
 	if (attacking) {
@@ -505,7 +512,7 @@ function drawScreen(map) {
 					if (monsters[q][2] <= 0) {
 						monsters.splice(q, 1);
 						playerkills++;
-						if (Math.random > 0.5) {
+						if (Math.random() > 0.5) {
 							protomap[chary/16+playerdir[1]][(charx-1)/16+playerdir[0]] = 3;
 						}
 						else {
