@@ -522,6 +522,9 @@ function drawScreen(map) {
 				}
 			}
 		}
+		else if (protomap[chary/16+playerdir[1]][(charx-1)/16+playerdir[0]] != undefined && protomap[chary/16+playerdir[1]][(charx-1)/16+playerdir[0]] == 0) {
+			protomap[chary/16+playerdir[1]][(charx-1)/16+playerdir[0]] = 1;
+		}
 	}
 	ctx.drawImage(char, 0, 0 , 14, 16, charx, chary, 14, 16);
 }
