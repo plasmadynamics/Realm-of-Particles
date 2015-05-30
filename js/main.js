@@ -398,8 +398,8 @@ function tick() {
 	if (protomap[chary/16][(charx-1)/16] == 3) {
 		protomap[chary/16][(charx-1)/16] = 1;
 		playerhp += 5;
-		if (playerhp > 20) {
-			playerhp = 20;
+		if (playerhp > 100) {
+			playerhp = 100;
 		}
 	}
 	if (protomap[chary/16][(charx-1)/16] == 4) {
