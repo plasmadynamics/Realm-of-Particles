@@ -11,6 +11,7 @@ var rock = document.getElementById("rock");
 var grass = document.getElementById("grass");
 var bad = document.getElementById("bad");
 var heart = document.getElementById("heart");
+var attack = document.getElementById("attack");
 //Character positions
 var charx = 1.0;
 var chary = 0.0;
@@ -32,9 +33,12 @@ var wpress = false;
 var apress = false;
 var spress = false;
 var dpress = false;
+var playerdir = [0, -1];
+var attacking = false;
 
 //Map Gen
 function genMap(xlim, ylim) {
+	protomap = [];
 	monsters = [];
 	for (k=0; k<ylim; k++) {
 		for (l=0; l<xlim; l++) {
@@ -122,9 +126,8 @@ function monSee(x, y) {
 }
 //Game loop
 function tick() {
-	drawScreen(protomap);
-	ctx.drawImage(char, 0, 0 , 14, 16, charx, chary, 14, 16);
 	if (Key.isDown(Key.W) && !wpress) {
+		playerdir = [0, -1];
 		wpress = true;
 		if (((chary > 0) && (protomap[(chary-16)/16][(charx-1)/16] == 1)) || ((chary > 0) && (protomap[(chary-16)/16][(charx-1)/16] == 3))) {
 			chary-=16;
@@ -165,6 +168,7 @@ function tick() {
 		wpress = false;
 	}
 	if (Key.isDown(Key.A) && !apress) {
+		playerdir = [-1, 0];
 		apress = true;
 		if (((charx > 16) && (protomap[chary/16][(charx-17)/16] == 1)) || ((charx > 16) && (protomap[chary/16][(charx-17)/16] == 3))) {
 			charx-=16;
@@ -205,6 +209,7 @@ function tick() {
 		apress = false;
 	}
 	if (Key.isDown(Key.S) && !spress) {
+		playerdir = [0, 1];
 		spress = true;
 		if (((chary+16 < canvas.height) && (protomap[(chary+16)/16][(charx-1)/16] == 1)) || ((chary+16 < canvas.height) && (protomap[(chary+16)/16][(charx-1)/16] == 3))) {
 			chary+=16;
@@ -245,6 +250,7 @@ function tick() {
 		spress = false;
 	}
 	if (Key.isDown(Key.D) && !dpress) {
+		playerdir = [1, 0];
 		dpress = true;
 		if (((charx+1 < canvas.width) && (protomap[chary/16][(charx+15)/16] == 1)) || ((charx+1 < canvas.width) && (protomap[chary/16][(charx+15)/16] == 3))) {
 			charx+=16;
@@ -288,6 +294,7 @@ function tick() {
 	}
 	//Monster movement
 	if (badcounter >= 30) {
+		tempmonsters = [];
 		monsters.forEach(function(item) {
 			tempmonsters.push(item);
 			if (monSee(item[1], item[0])) {
@@ -295,10 +302,12 @@ function tick() {
 					if (item[1] < (charx-1)/16 && item[1]+1 != (charx-1)/16 && protomap[item[0]][item[1]+1] == 1) {
 						protomap[item[0]][item[1]] = 1;
 						protomap[item[0]][item[1]+1] = 2;
+						tempmonsters[tempmonsters.length-1][1]++;
 					}
 					if (item[1] > (charx-1)/16 && item[1]-1 != (charx-1)/16 && protomap[item[0]][item[1]-1] == 1) {
 						protomap[item[0]][item[1]] = 1;
 						protomap[item[0]][item[1]-1] = 2;
+						tempmonsters[tempmonsters.length-1][1]--;
 					}
 					if (Math.abs(item[1] - (charx-1)/16) == 1) {
 						playerhp -= 4;
@@ -308,10 +317,12 @@ function tick() {
 					if (item[0] < chary/16 && item[0]+1 != chary/16 && protomap[item[0]+1][item[1]] == 1) {
 						protomap[item[0]][item[1]] = 1;
 						protomap[item[0]+1][item[1]] = 2;
+						tempmonsters[tempmonsters.length-1][0]++;
 					}
 					if (item[0] > chary/16 && item[0]-1 != chary/16 && protomap[item[0]-1][item[1]] == 1) {
 						protomap[item[0]][item[1]] = 1;
 						protomap[item[0]-1][item[1]] = 2;
+						tempmonsters[tempmonsters.length-1][0]--;
 					}
 					if (Math.abs(item[0] - chary/16) == 1) {
 						playerhp -= 4;
@@ -345,40 +356,32 @@ function tick() {
 				if (dir=='d') {
 					protomap[item[0]][item[1]] = 1;
 					protomap[item[0]+1][item[1]] = 2;
+					tempmonsters[tempmonsters.length-1][0]++;
 				}
 				else if (dir=='u') {
 					protomap[item[0]][item[1]] = 1;
 					protomap[item[0]-1][item[1]] = 2;
+					tempmonsters[tempmonsters.length-1][0]--;
 				}
 				else if (dir=='l') {
 					protomap[item[0]][item[1]] = 1;
 					protomap[item[0]][item[1]-1] = 2;
+					tempmonsters[tempmonsters.length-1][1]--;
 				}
 				else if (dir=='r') {
 					protomap[item[0]][item[1]] = 1;
 					protomap[item[0]][item[1]+1] = 2;
+					tempmonsters[tempmonsters.length-1][1]++;
 				}
 			}
 		});
+		monsters=tempmonsters;
 		badcounter = 0;
 	}
 	else if (badcounter < 30) {
 		badcounter++;
 	}
-	monsters=[];
-	for (monproa = 0; monproa < protomap.length; monproa++) {
-		for (monprob = 0; monprob < protomap[monproa].length; monprob++) {
-			if (protomap[monproa][monprob] == 2) {
-				monsters.push([monproa, monprob, tempmonsters.forEach(function(item){
-					if (item[0] == monproa && item[1] == monprob) {
-						return item[2];
-					}
-				})]);
-			}
-		}
-	}
 	drawScreen(protomap);
-	ctx.drawImage(char, 0, 0 , 14, 16, charx, chary, 14, 16);
 	if (protomap[chary/16][(charx-1)/16] == 3) {
 		protomap[chary/16][(charx-1)/16] = 1;
 		playerhp += 5;
@@ -395,6 +398,12 @@ function tick() {
 	hpbox.innerHTML = 'HP: ' + Math.ceil(playerhp).toString();
 	if (Key.isDown(Key.ESC)) {
 		dispEnd();
+	}
+	if (Key.isDown(Key.SPACE)) {
+		attacking = true;
+	}
+	if (!Key.isDown(Key.SPACE)) {
+		attacking = false;
 	}
 }
 var Key = {
@@ -439,6 +448,44 @@ function drawScreen(map) {
 			}
 		}
 	}
+	if (attacking) {
+		if (playerdir[0] == 0 && playerdir[1] == 1) {
+			ctx.save();
+			ctx.translate(charx+15, chary+16);
+			ctx.rotate(Math.PI/2);
+			ctx.drawImage(attack, 0, 0);
+			ctx.restore();
+		}
+		else if (playerdir[0] == 0 && playerdir[1] == -1) {
+			ctx.save();
+			ctx.translate(charx-1, chary);
+			ctx.rotate(Math.PI*3/2);
+			ctx.drawImage(attack, 0, 0);
+			ctx.restore();
+		}
+		else if (playerdir[0] == -1 && playerdir[1] == 0) {
+			ctx.save();
+			ctx.translate(charx-1, chary+16);
+			ctx.rotate(Math.PI);
+			ctx.drawImage(attack, 0, 0);
+			ctx.restore();
+		}
+		else {
+			ctx.drawImage(attack, charx-1+(playerdir[0]*16), chary+(playerdir[1]*16), 16, 16);
+		}
+		if (protomap[chary/16+playerdir[1]][(charx-1)/16+playerdir[0]] != undefined && protomap[chary/16+playerdir[1]][(charx-1)/16+playerdir[0]] == 2) {
+			for (q = 0; q < monsters.length; q++) {
+				if (monsters[q][0] == chary/16+playerdir[1] && monsters[q][1] == (charx-1)/16+playerdir[0]) {
+					monsters[q][2] -= 1/6;
+					if (monsters[q][2] <= 0) {
+						monsters.splice(q, 1);
+						protomap[chary/16+playerdir[1]][(charx-1)/16+playerdir[0]] = 3;
+					}
+				}
+			}
+		}
+	}
+	ctx.drawImage(char, 0, 0 , 14, 16, charx, chary, 14, 16);
 }
 
 //Chunk detection
