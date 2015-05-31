@@ -24,7 +24,7 @@ body {
 	border: 1px solid #880088;
 	position: absolute;
 	bottom: 44px;
-	right: 24px;
+	right: 40px;
 }
 #manabox {
 	height: 16px;
@@ -37,7 +37,7 @@ body {
 	border: 1px solid #880088;
 	position: absolute;
 	bottom: 44px;
-	right: 88px;
+	right: 104px;
 }
 #killbox {
 	height: 16px;
@@ -50,5 +50,5 @@ body {
 	border: 1px solid #880088;
 	position: absolute;
 	bottom: 44px;
-	right: 152px;
+	right: 168px;
 }
