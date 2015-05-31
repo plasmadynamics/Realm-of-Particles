@@ -14,38 +14,41 @@ body {
 	border-bottom: 32px solid #FF00FF;
 }
 #hpbox {
-	height: 20px;
+	height: 16px;
 	width: 64px;
 	background-color: #FFFFFF;
 	font-family: Impact, Charcoal, sans-serif;
+	font-size: 0.8em;
 	color: #FF0000;
 	margin: auto;
 	border: 1px solid #880088;
 	position: absolute;
-	bottom: 32px;
+	bottom: 44px;
 	right: 24px;
 }
 #manabox {
-	height: 20px;
+	height: 16px;
 	width: 64px;
 	background-color: #FFFFFF;
 	font-family: Impact, Charcoal, sans-serif;
+	font-size: 0.8em;
 	color: #0000FF;
 	margin: auto;
 	border: 1px solid #880088;
 	position: absolute;
-	bottom: 32px;
+	bottom: 44px;
 	right: 88px;
 }
 #killbox {
-	height: 20px;
+	height: 16px;
 	width: 64px;
 	background-color: #FFFFFF;
 	font-family: Impact, Charcoal, sans-serif;
+	font-size: 0.8em;
 	color: #00FF00;
 	margin: auto;
 	border: 1px solid #880088;
 	position: absolute;
-	bottom: 32px;
+	bottom: 44px;
 	right: 152px;
 }
