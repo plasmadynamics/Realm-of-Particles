@@ -54,3 +54,16 @@ body {
 	bottom: 34px;
 	right: 168px;
 }
+#highbox {
+	height: 16px;
+	width: 128px;
+	background-color: #FFFFFF;
+	font-family: Impact, Charcoal, sans-serif;
+	font-size: 0.8em;
+	color: #FF0088;
+	margin: auto;
+	border: 1px solid #880088;
+	position: absolute;
+	bottom: 34px;
+	right: 232px;
+}

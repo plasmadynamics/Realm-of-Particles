@@ -3,6 +3,14 @@ var canvas = document.getElementById("canvas");
 var hpbox = document.getElementById("hpbox");
 var manabox = document.getElementById("manabox");
 var killbox = document.getElementById("killbox");
+var highbox = document.getElementById("highbox");
+if (localStorage.getItem("highscore") != undefined) {
+	highbox.innerHTML = "Highscore: " + localStorage.getItem("highscore");
+}
+else {
+	localStorage.setItem("highscore", "0");
+	highbox.innerHTML = "Highscore: " + localStorage.getItem("highscore");
+}
 canvas.width = Math.floor((window.innerWidth-80)/16)*16;
 canvas.height = Math.floor((window.innerHeight-80)/16)*16;
 var ctx = canvas.getContext("2d");
@@ -87,14 +95,20 @@ drawScreen(protomap);
 ctx.drawImage(char, 0, 0 , 14, 16, charx, chary, 14, 16);
 //End display
 function dispEnd() {
+	if (playerkills > parseInt(localStorage.getItem("highscore"))) {
+		localStorage.setItem("highscore", playerkills.toString());
+		highbox.innerHTML = "Highscore: " + localStorage.getItem("highscore");
+	}
 	clearInterval(loop);
 	ctx.fillStyle = "#000000";
 	ctx.fillRect(0, 0, canvas.width, canvas.height);
-	hpbox.hidden = true;
-	manabox.hidden = true;
 }
 //Game over
 function gameOver() {
+	if (playerkills > parseInt(localStorage.getItem("highscore"))) {
+		localStorage.setItem("highscore", playerkills.toString());
+		highbox.innerHTML = "Highscore: " + localStorage.getItem("highscore");
+	}
 	clearInterval(loop);
 	ctx.fillStyle = "#FF0000";
 	ctx.fillRect(0, 0, canvas.width, canvas.height);
