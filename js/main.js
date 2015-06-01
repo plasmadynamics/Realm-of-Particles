@@ -47,7 +47,7 @@ var wpress = false;
 var apress = false;
 var spress = false;
 var dpress = false;
-var playerdir = [0, -1];
+var playerdir = [0, 1];
 var attacking = false;
 
 //Map Gen
