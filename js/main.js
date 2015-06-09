@@ -26,7 +26,7 @@ var attack = document.getElementById("attack");
 var mana = document.getElementById("mana");
 var water = document.getElementById("water");
 //Character positions
-var charx = 1;
+var charx = tileSize/16;
 var chary = 0;
 //Chunk and world gen variables
 var chunkx = 0;
@@ -204,13 +204,13 @@ function tick() {
 		else if (((charx > tileSize) === false) && (chunkExists(chunkx - 1, chunky) !== false)) {
 			chunkmap[mapindex] = [chunkx, chunky, protomap, monsters, mapindex];
 			chunkx -= 1;
-			charx = (canvas.width - tileSize + 1);
+			charx = (canvas.width - tileSize + tileSize / 16);
 			protomap = chunkExists(chunkx, chunky)[2];
 			monsters = chunkExists(chunkx, chunky)[3];
 			mapindex = chunkExists(chunkx, chunky)[4];
 			if ((protomap[chary / tileSize][(charx - tileSize / 16) / tileSize] === 0) || (protomap[chary / tileSize][(charx - tileSize / 16) / tileSize] === 2) || (protomap[chary / tileSize][(charx - tileSize / 16) / tileSize] === 5)) {
 				chunkx += 1;
-				charx = 1;
+				charx = tileSize / 16;
 				protomap = chunkExists(chunkx, chunky)[2];
 				monsters = chunkExists(chunkx, chunky)[3];
 				mapindex = chunkExists(chunkx, chunky)[4];
@@ -226,7 +226,7 @@ function tick() {
 			mapindex = chunkmap.length - 1;
 			if ((protomap[chary / tileSize][(charx - tileSize / 16) / tileSize] === 0) || (protomap[chary / tileSize][(charx - tileSize / 16) / tileSize] === 2) || (protomap[chary / tileSize][(charx - tileSize / 16) / tileSize] === 5)) {
 				chunkx += 1;
-				charx = 1;
+				charx = tileSize / 16;
 				protomap = chunkExists(chunkx, chunky)[2];
 				monsters = chunkExists(chunkx, chunky)[3];
 				mapindex = chunkExists(chunkx, chunky)[4];
@@ -280,37 +280,35 @@ function tick() {
 	if (Key.isDown(Key.D) && !dpress) {
 		playerdir = [1, 0];
 		dpress = true;
-		if (((charx + tileSize / 16 < canvas.width) && (protomap[chary / tileSize][(charx + tileSize - tileSize / 16) / tileSize] === 1)) || ((charx + tileSize / 16 < canvas.width) && (protomap[chary / tileSize][(charx + tileSize) / tileSize] === 3)) || ((charx + tileSize / 16 < canvas.width) && (protomap[chary / tileSize][(charx + tileSize - tileSize / 16) / tileSize] === 4))) {
+		if (((charx + tileSize < canvas.width) && (protomap[chary / tileSize][(charx + tileSize * 15 / 16) / tileSize] === 1)) || ((charx + tileSize < canvas.width) && (protomap[chary / tileSize][(charx + tileSize * 15 / 16) / tileSize] === 3)) || ((charx + tileSize < canvas.width) && (protomap[chary / tileSize][(charx + tileSize * 15 / 16) / tileSize] === 4))) {
 			charx += tileSize;
 		}
-		else if (((charx + 2 * (tileSize - tileSize / 16) < canvas.width) === false) && (chunkExists(chunkx + 1, chunky) !== false)) {
+		else if (!(charx + tileSize < canvas.width) && (chunkExists(chunkx + 1, chunky) !== false)) {
 			chunkmap[mapindex] = [chunkx, chunky, protomap, monsters, mapindex];
 			chunkx += 1;
-			charx = 1;
+			charx = tileSize / 16;
 			protomap = chunkExists(chunkx, chunky)[2];
 			monsters = chunkExists(chunkx, chunky)[3];
 			mapindex = chunkExists(chunkx, chunky)[4];
-			if ((protomap[chary / tileSize][(charx - tileSize / 16) / tileSize] === 0) || (protomap[chary / tileSize][(charx - tileSize / 16) / tileSize] === 2) || (protomap[chary / tileSize][(charx - tileSize / 16) / tileSize] === 5)) {
+			if ((protomap[chary / tileSize][0] === 0) || (protomap[chary / tileSize][0] === 2) || (protomap[chary / tileSize][0] === 5)) {
 				chunkx -= 1;
-				charx = (canvas.width - tileSize + tileSize / 16);
+				charx = (canvas.width - tileSize * 15 / 16);
 				protomap = chunkExists(chunkx, chunky)[2];
 				monsters = chunkExists(chunkx, chunky)[3];
 				mapindex = chunkExists(chunkx, chunky)[4];
 			}
 		}
-		else if (((charx + 2 * (tileSize - tileSize / 16) < canvas.width) === false) && (chunkExists(chunkx + 1, chunky) === false)) {
+		else if (!(charx + tileSize < canvas.width) && (chunkExists(chunkx + 1, chunky) === false)) {
 			chunkmap[mapindex] = [chunkx, chunky, protomap, monsters, mapindex];
 			chunkx += 1;
-			charx = 1;
+			charx = tileSize / 16;
 			protomap = [];
 			genMap(Math.floor(canvas.width / tileSize), Math.floor(canvas.height / tileSize));
 			chunkmap.push([chunkx, chunky, protomap, monsters, chunkmap.length]);
 			mapindex = chunkmap.length - 1;
-			if ((protomap[chary / tileSize][(charx - tileSize / 16) / tileSize] === 0) || (protomap[chary / tileSize][(charx - tileSize / 16) / tileSize] === 2) || (protomap[chary / tileSize][(charx - tileSize / 16) / tileSize] === 5)) {
-				chunkmap[mapindex] = [];
+			if ((protomap[chary / tileSize][0] === 0) || (protomap[chary / tileSize][0] === 2) || (protomap[chary / tileSize][0] === 5)) {
 				chunkx -= 1;
-				charx = (canvas.width - tileSize + tileSize / 16);
-				chunkmap[mapindex] = [];
+				charx = (canvas.width - tileSize * 15 / 16);
 				protomap = chunkExists(chunkx, chunky)[2];
 				monsters = chunkExists(chunkx, chunky)[3];
 				mapindex = chunkExists(chunkx, chunky)[4];
@@ -500,21 +498,21 @@ function drawScreen(map) {
 			ctx.save();
 			ctx.translate(charx + tileSize - tileSize / 16, chary + tileSize);
 			ctx.rotate(Math.PI / 2);
-			ctx.drawImage(attack, 0, 0);
+			ctx.drawImage(attack, 0, 0, tileSize, tileSize);
 			ctx.restore();
 		}
 		else if (playerdir[0] === 0 && playerdir[1] === -1) {
 			ctx.save();
 			ctx.translate(charx - tileSize / 16, chary);
 			ctx.rotate(Math.PI * 1.5);
-			ctx.drawImage(attack, 0, 0);
+			ctx.drawImage(attack, 0, 0, tileSize, tileSize);
 			ctx.restore();
 		}
 		else if (playerdir[0] == -1 && playerdir[1] == 0) {
 			ctx.save();
 			ctx.translate(charx - tileSize / 16, chary + tileSize);
 			ctx.rotate(Math.PI);
-			ctx.drawImage(attack, 0, 0);
+			ctx.drawImage(attack, 0, 0, tileSize, tileSize);
 			ctx.restore();
 		}
 		else {
