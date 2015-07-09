@@ -15,31 +15,45 @@ body {
 	border: 16px solid #FF00FF;
 	border-bottom: 32px solid #FF00FF;
 }
-#hpbox {
+#hpwrapper {
 	height: 16px;
 	width: 64px;
-	background-color: #FFFFFF;
+	background-color: #888;
 	font-family: Impact, Charcoal, sans-serif;
 	font-size: 0.8em;
-	color: #FF0000;
 	margin: auto;
 	border: 1px solid #880088;
 	position: absolute;
 	bottom: 34px;
 	right: 40px;
 }
-#manabox {
+#manawrapper {
 	height: 16px;
 	width: 64px;
-	background-color: #FFFFFF;
+	background-color: #888;
 	font-family: Impact, Charcoal, sans-serif;
 	font-size: 0.8em;
-	color: #0000FF;
 	margin: auto;
 	border: 1px solid #880088;
 	position: absolute;
 	bottom: 34px;
 	right: 104px;
+}
+#hpbox {
+	height: 100%;
+	position: absolute;
+	background-color: #FF0000;
+	margin: 0px;
+	top: 0px;
+	left: 0px;
+}
+#manabox {
+	height: 100%;
+	position: absolute;
+	background-color: #0000FF;
+	margin: 0px;
+	top: 0px;
+	left: 0px;
 }
 #killbox {
 	height: 16px;

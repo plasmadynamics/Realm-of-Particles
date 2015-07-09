@@ -412,15 +412,15 @@ function tick() {
 	if (protomap[chary/16][(charx-1)/16] == 3) {
 		protomap[chary/16][(charx-1)/16] = 1;
 		playerhp += 5;
-		if (playerhp > 100) {
-			playerhp = 100;
+		if (playerhp > 20) {
+			playerhp = 20;
 		}
 	}
 	if (protomap[chary/16][(charx-1)/16] == 4) {
 		protomap[chary/16][(charx-1)/16] = 1;
 		playermana += 5;
-		if (playerhp > 100) {
-			playerhp = 100;
+		if (playerhp > 20) {
+			playerhp = 20;
 		}
 	}
 	if (playerhp <= 0) {
@@ -429,9 +429,9 @@ function tick() {
 	if (playerhp < 0) {
 		playerhp = 0;
 	}
-	hpbox.innerHTML = 'HP: ' + Math.ceil(playerhp).toString();
-	manabox.innerHTML = 'Mana: ' + Math.ceil(playermana).toString();
-	killbox.innerHTML = 'Kills: ' + Math.ceil(playerkills).toString();
+	hpbox.style.width = (Math.floor(playerhp)*5).toString() + '%';
+	manabox.style.width = (Math.floor(playermana)*5).toString() + '%';
+	killbox.innerHTML = 'Kills: ' + Math.floor(playerkills).toString();
 	if (Key.isDown(Key.ESC)) {
 		dispEnd();
 	}
